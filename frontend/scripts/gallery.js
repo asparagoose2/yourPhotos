@@ -3,11 +3,8 @@ $(function() {
     console.log("gallery.js loaded");
     $.get("http://localhost:3000/api/gallery", function(data,status) {
         console.log(data);
-        if(data.length !== 0) {
-            console.log("data.length !== 0");
-            console.log(data);
+        if(data.photos && data.photos.length !== 0) {
             const photos = data.photos;
-            //for all photos create a div
             for (let i = 0; i < photos.length; i++) {
                 const photo = photos[i];
                 const photoDiv = $("<div>");
@@ -22,7 +19,7 @@ $(function() {
                 $("#gallery").append(photoDiv);
             }
         } else {
-            console.log("No photos found");
+            window.location = "http://localhost:3000/info.html";
         }
     });
 });

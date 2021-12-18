@@ -12,6 +12,8 @@ app.use(fileUpload({
     createParentPath: true
 }));
 
+const { photosRouter } = require('./routers/photosRouter');
+
 // enable static serving of files
 app.use(express.static('frontend'));
 app.use(express.static('public/uploads'));
@@ -20,6 +22,8 @@ app.use(express.static('public/uploads'));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.use("/photos", photosRouter);
 
 // app.use(morgan('dev'));
 
