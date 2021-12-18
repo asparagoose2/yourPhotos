@@ -11,11 +11,14 @@ $(function() {
             for (let i = 0; i < photos.length; i++) {
                 const photo = photos[i];
                 const photoDiv = $("<div>");
+                const photoA = $("<a>");
+                photoA.attr("href", photo.split("/")[photo.split("/").length - 1]);
                 photoDiv.addClass("col-6");
                 const photoImg = $("<img>");
                 photoImg.attr("src", photo);
                 photoImg.addClass("img-thumbnail rounded");
-                photoDiv.append(photoImg);
+                photoA.append(photoImg);
+                photoDiv.append(photoA);
                 $("#gallery").append(photoDiv);
             }
         } else {
