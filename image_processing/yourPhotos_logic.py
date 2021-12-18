@@ -16,7 +16,6 @@ import os
 from dotenv import load_dotenv
 import sys
 
-
 load_dotenv()
 
 DB_USER = os.getenv('DB_USER')
@@ -24,28 +23,37 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 NULL_CODE = os.getenv('NULL_CODE') #'NULL'
 QR_CODE_URL = os.getenv('QR_CODE_URL') # "localhost:5000/gallery/{}"
 
-
 client = pymongo.MongoClient("mongodb+srv://{userName}:{password}@cluster0.qtek2.mongodb.net/yourPhotos?retryWrites=true&w=majority".format(userName=DB_USER, password=DB_PASSWORD))
 db = client.yourPhotos
 Events = db.events 
 Galleries = db.galleries
 
-
 owners = None
 galleries = {}
 
 def scan_folder(folder):
-    # scan all images in folder by date and time of creation
-    paths_and_dates = {path: Image.open(path)._getexif()[36867] for path in Path(folder).iterdir()}
-    paths = sorted(Path(folder).iterdir(), key=paths_and_dates.get)
 
-    # for img_name in os.listdir(folder):
-    for img_name in paths:
-        img_path = os.path.join(folder, img_name.name)
-        # img_path = './' + str(img_name)
-        if img_path.endswith('.png') or img_path.endswith('.jpg'):
-            # scan image
-            scan_image(img_path)
+    paths_and_dates = {}
+    paths = []
+    for file in os.listdir(folder):
+        try:
+            # check file extension
+            if file.endswith(".jpg") or file.endswith(".jpeg"):
+                path = os.path.join(folder, file)
+                paths.append(path)
+                img = Image.open(path)
+            # check image is jpeg
+                paths_and_dates[path] = img._getexif()[36867]
+                exif = img._getexif()
+                if exif:
+                    paths_and_dates[path] = exif[36867]
+        except:
+            print('[-] Error opening image: {}'.format(path))
+
+    sorted_paths = sorted(paths, key=paths_and_dates.get)
+
+    for img_path in sorted_paths:
+        scan_image(img_path)
 
 
 def scan_image(img_path):
@@ -70,11 +78,11 @@ def scan_image(img_path):
                 Galleries.update_one({"id": owner}, {"$push": {"photos": img_path}})
 
 
-def generate_qr_codes(guest_list,event_name):
+def generate_qr_codes(guest_list,event_name,event_id):
     # create folder named curret date hour minute second
-    date = str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-    folder_path = os.path.join(os.getcwd(), date)
-    os.mkdir(folder_path)
+    # date = str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
+    folder_path = os.path.join(os.getcwd() + "/public/qr_codes", event_id)
+    # os.mkdir(folder_path)
     for guest in guest_list:
         # generate qr code
         qr = qrcode.QRCode(
@@ -103,10 +111,15 @@ def generate_guest_list_from_csv(csv_file_path,event_id):
     return guests
 
 def generate_qr_codes_from_csv(csv_file_path,event_id):
+    print("[+] Generating QR codes from CSV")
+    print("event_id: {}".format(event_id))
+    print("event_id type {}".format(type(event_id)))
+    print("csv_file_path: {}".format(csv_file_path))
     event = Events.find_one({"event_id": event_id})
+    print("event: {}".format(event))    
     event_name = event["event_name"]
     guests = generate_guest_list_from_csv(csv_file_path,event_id)
-    generate_qr_codes(guests,event_name)
+    generate_qr_codes(guests,event_name,event_id)
     guests_id = [guest["id"] for guest in guests]
     print(guests)
     Galleries.insert_many(guests)
@@ -134,7 +147,13 @@ def create_event(event_name,event_date,event_owner=None,guests=[]):
         "guests": guests
     }
     Events.insert_one(newEvent)
+    Events.find_one({"event_id": event_id})
+    # print(event_id)
     return event_id
+
+def create_event_and_qr(csv_file,event_name,event_date,event_owner=None,guests=[]):
+    event_id = create_event(event_name,event_date,event_owner,guests)
+    generate_qr_codes_from_csv(csv_file,event_id)
 
 
 def get_all_photos_from_gallery(gallery_id):
@@ -146,16 +165,49 @@ def main():
     args = sys.argv
     if len(args) == 1:
         print("[-] No arguments provided")
+        os.mkdir("./tests")
         return
     if args[1] == 'scan':
-        scan_folder(args[2])
+        print("[+] Scanning folder")
+        print("lala" ,args[0], args[1] ,args[2],"  ", os.getcwd())
+
+        # check if folder exists
+        if not os.path.exists(args[2]):
+            print("[-] Folder does not exist")
+            sys.stdout.flush()
+            return
+        else:
+            scan_folder(args[2])
+            return
     elif args[1] == 'create':
         generate_qr_codes_from_csv(args[2],args[3])
+        return
     elif args[1] == 'create_n':
         generate_n_unnamed_qr_codes(int(args[2]),args[3])
+        return
     elif args[1] == 'create_event':
-        event_id = create_event(args[2],args[3],args[4] if args[4] else None,args[5] if args[5] else [])
-        print("[+] Event created with id: {}".format(event_id))
+        if len(args) == 4:
+            event_id = create_event(args[2],args[3])
+            print(event_id)
+            
+        elif len(args) == 5:
+            event_id = create_event(args[2],args[3],args[4] if args[4] else None,args[5] if args[5] else [])
+            print("[+] Event created with id: {}".format(event_id))
+        else:
+            print("[-] Invalid number of arguments")
+
+    elif args[1] == 'create_event_and_qr':
+        if len(args) == 5:
+            create_event_and_qr(args[2],args[3],args[4])
+            print("done")
+            
+        elif len(args) == 6:
+            event_id = create_event_and_qr(args[2],args[3],args[4],args[5],args[6])
+            print("[+] Event created with id: {}".format(event_id))
+        else:
+            print("[-] Invalid number of arguments")
+                
+        return
     elif args[1] == 'help' or args[1] == '-h':
         print("[+] Available commands:")
         print("[+] scan <folder_path>")
@@ -163,16 +215,7 @@ def main():
         print("[+] create_n <n> <event_id>")
         print("[+] create_event <event_name> <event_date> <event_owner> <guests>")
         print("[+] help")
+        return
 
 if __name__ == '__main__':
     main()
-
-# generate_qr_codes(generate_guest_list_from_csv('guest_list.csv'))
-# generate_qr_codes_from_csv('guest_list.csv', create_event("our first event!", "2020-01-01"))
-# generate_qr_codes_from_csv('guest_list.csv', "b9b57c1f-6628-4e66-96b8-b89d336627c5")
-
-# print(col.find_one({"guests": {"first_name":"koral"}}))
-# print(get_all_photos_from_gallery("a896db65-9282-4ea9-aa7a-14a7555a7633"))
-# scan_folder('./Sample_images')
-# print(galleries)      
-

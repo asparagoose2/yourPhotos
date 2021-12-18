@@ -26,6 +26,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use("/photos", photosRouter);
 
+app.get("/api/events/:id", (req, res) => {
+    const eventId = req.params.id;
+    res.json({status: true, event: {name: "eventId"}});
+});
 // app.use(morgan('dev'));
 
 //start app 
