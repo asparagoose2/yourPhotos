@@ -2,6 +2,9 @@ const { spawn } = require('child_process');
 
 
 uploadPhotos = async function(req, res) {
+    console.log("upload photos");
+    // console.log(req.files);
+    console.log(req.body);
     try {
         if(!req.files) {
             res.send({
@@ -33,7 +36,7 @@ uploadPhotos = async function(req, res) {
             if(fs.existsSync("image_processing/yourPhotos_logic.py")) {
                 console.log("yes");
                 //run python script
-                const pythonProcess = spawn('python3', ["image_processing/yourPhotos_logic.py", "scan" ,"public/uploads/1234"]);
+                const pythonProcess = spawn('python3', ["image_processing/yourPhotos_logic.py", "scan" ,"public/uploads/"+eventId]);
                 pythonProcess.stdout.on('data', (data) => {
                     console.log(`stdout: ${data}`);
                 });
