@@ -21,15 +21,15 @@ load_dotenv()
 
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
+NULL_CODE = os.getenv('NULL_CODE') #'NULL'
+QR_CODE_URL = os.getenv('QR_CODE_URL') # "localhost:5000/gallery/{}"
+
 
 client = pymongo.MongoClient("mongodb+srv://{userName}:{password}@cluster0.qtek2.mongodb.net/yourPhotos?retryWrites=true&w=majority".format(userName=DB_USER, password=DB_PASSWORD))
 db = client.yourPhotos
 Events = db.events 
 Galleries = db.galleries
 
-
-NULL_CODE = 'NULL'
-QR_CODE_URL = "localhost:5000/gallery/{}"
 
 owners = None
 galleries = {}
