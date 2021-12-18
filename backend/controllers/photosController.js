@@ -57,7 +57,39 @@ uploadPhotos = async function(req, res) {
     }
 }
 
+createEventAndQrCodes = async function(req, res) {
+    let pythonProcess;
+    guest_list_file =  req.files.guest_list
+    console.log(req.files);
+    console.log(req.body)   
+    // create new folder for event in ../public/uploads/
+    const uploadDir = `public/qr_codes/${eventId}`;
+    const fs = require('fs');
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir);
+    }
+    guest_list_file.mv(`${uploadDir}/guest_list.csv`);
+    
+    if (req.body.event_owner && req.body.guests) {
+        pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event_and_qr", `${uploadDir}/guest_list.csv`, req.body.event_name, req.body.event_date, req.body.event_owner || null, req.body.guests || null]);
+    } else {
+        pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event_and_qr", `${uploadDir}/guest_list.csv`, req.body.event_name, req.body.event_date]);
+    }
+
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+    pythonProcess.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+}
+
+
 createEvent = async function(req, res) {
+
     let pythonProcess;
     if (req.body.event_owner && req.body.guests) {
         pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date, req.body.event_owner || null, req.body.guests || null]);
@@ -65,8 +97,29 @@ createEvent = async function(req, res) {
         pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date]);
     }
     pythonProcess.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-        res.json({status: true, body: { message: "Event created", event_id: data.toString() }});
+        console.log("data:", data.toString());
+        const eventId = data.toString().replace(/(\r\n|\n|\r)/gm, "");
+        guest_list_file =  req.files.guest_list
+        console.log(req.files);
+        console.log(req.body)   
+        // create new folder for event in ../public/uploads/
+        const uploadDir = `public/qr_codes/${eventId}`;
+        const fs = require('fs');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir);
+        }
+        guest_list_file.mv(`${uploadDir}/guest_list.csv`);
+        const pythonProcess2 = spawn('python3',["image_processing/yourPhotos_logic.py", "create", `${uploadDir}/guest_list.csv`, eventId]);
+        pythonProcess2.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+        pythonProcess2.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
+        pythonProcess2.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+        
     });
     pythonProcess.stderr.on('data', (data) => {
         console.error(`stderr: ${data}`);
@@ -78,8 +131,13 @@ createEvent = async function(req, res) {
 }
 
 generate_qr_codes = async function(req, res) {
+    console.log("here");
+    console.log(req.params.eventId);
+
     eventId = req.params.eventId;
     guest_list_file =  req.files.guest_list
+    console.log(req.files);
+    console.log(req.body)   
     // create new folder for event in ../public/uploads/
     const uploadDir = `public/qr_codes/${eventId}`;
     const fs = require('fs');
@@ -104,5 +162,6 @@ generate_qr_codes = async function(req, res) {
 module.exports = {
     uploadPhotos,
     generate_qr_codes,
-    createEvent
+    createEvent,
+    createEventAndQrCodes
 }

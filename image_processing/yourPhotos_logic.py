@@ -113,8 +113,10 @@ def generate_guest_list_from_csv(csv_file_path,event_id):
 def generate_qr_codes_from_csv(csv_file_path,event_id):
     print("[+] Generating QR codes from CSV")
     print("event_id: {}".format(event_id))
+    print("event_id type {}".format(type(event_id)))
     print("csv_file_path: {}".format(csv_file_path))
     event = Events.find_one({"event_id": event_id})
+    print("event: {}".format(event))    
     event_name = event["event_name"]
     guests = generate_guest_list_from_csv(csv_file_path,event_id)
     generate_qr_codes(guests,event_name,event_id)
@@ -145,8 +147,13 @@ def create_event(event_name,event_date,event_owner=None,guests=[]):
         "guests": guests
     }
     Events.insert_one(newEvent)
-    print(Events.find_one({"event_id": event_id}))
+    Events.find_one({"event_id": event_id})
+    # print(event_id)
     return event_id
+
+def create_event_and_qr(csv_file,event_name,event_date,event_owner=None,guests=[]):
+    event_id = create_event(event_name,event_date,event_owner,guests)
+    generate_qr_codes_from_csv(csv_file,event_id)
 
 
 def get_all_photos_from_gallery(gallery_id):
@@ -179,13 +186,23 @@ def main():
         generate_n_unnamed_qr_codes(int(args[2]),args[3])
         return
     elif args[1] == 'create_event':
-        print("[+] Creating event")
         if len(args) == 4:
             event_id = create_event(args[2],args[3])
-            print("[+] Event created with id: {}".format(event_id))
+            print(event_id)
             
         elif len(args) == 5:
             event_id = create_event(args[2],args[3],args[4] if args[4] else None,args[5] if args[5] else [])
+            print("[+] Event created with id: {}".format(event_id))
+        else:
+            print("[-] Invalid number of arguments")
+
+    elif args[1] == 'create_event_and_qr':
+        if len(args) == 5:
+            create_event_and_qr(args[2],args[3],args[4])
+            print("done")
+            
+        elif len(args) == 6:
+            event_id = create_event_and_qr(args[2],args[3],args[4],args[5],args[6])
             print("[+] Event created with id: {}".format(event_id))
         else:
             print("[-] Invalid number of arguments")
