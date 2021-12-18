@@ -1,8 +1,9 @@
 $(function() {
     $("header").css("background-color", "rgba(0,0,0,0.5)");
     console.log("gallery.js loaded");
-    $.get("http://localhost:3000/api/gallery", function(data,status) {
+    $.get("http://localhost:3000/api/gallery/"+window.location.href.split("?")[1], function(data,status) {
         console.log(data);
+        data = data[0];
         if(data.photos && data.photos.length !== 0) {
             const photos = data.photos;
             for (let i = 0; i < photos.length; i++) {
@@ -19,7 +20,7 @@ $(function() {
                 $("#gallery").append(photoDiv);
             }
         } else {
-            window.location = "http://localhost:3000/info.html";
+            // window.location = "http://localhost:3000/info.html";
         }
     });
 });
