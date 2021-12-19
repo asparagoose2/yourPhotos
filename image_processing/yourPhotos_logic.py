@@ -15,6 +15,7 @@ import pymongo
 import os
 from dotenv import load_dotenv
 import sys
+import shutil
 
 load_dotenv()
 
@@ -75,7 +76,7 @@ def scan_image(img_path):
                 if owner not in galleries:
                     galleries[owner] = []
                 galleries[owner].append(img_path)
-                Galleries.update_one({"id": owner}, {"$push": {"photos": img_path}})
+                Galleries.update_one({"id": owner}, {"$addToSet": {"photos": img_path}})
 
 
 def generate_qr_codes(guest_list,event_name,event_id):
@@ -101,6 +102,10 @@ def generate_qr_codes(guest_list,event_name,event_id):
         draw.text((40, height - 47), guest["first_name"].capitalize() + " " + guest["last_name"].capitalize(), font=font)
         draw.text((40, 0 + 5), event_name.title(), font=font)
         img.save(os.path.join(folder_path, guest["id"] +'_'+guest["first_name"]+'_'+guest["first_name"] + '.png'))
+
+    # archive folder to zip file
+    # shutil.make_archive(folder_path, 'zip', folder_path)
+    # shutil.move(folder_path + '.zip', folder_path + '/qr_codes.zip')
 
 
 def generate_guest_list_from_csv(csv_file_path,event_id):
@@ -131,7 +136,7 @@ def generate_n_unnamed_qr_codes(n,event_id):
     guests = []
     for i in range(n):
         guests.append({"id": str(uuid.uuid4()), "first_name": "", "last_name": "", "email": "", "phone": "","photos":[], "event": event_id})
-    generate_qr_codes(guests,event_name)
+    generate_qr_codes(guests,event_name,event_id)
     guests_id = [guest["id"] for guest in guests]
     Galleries.insert_many(guests)
     Events.update_one({"event_id": event_id}, {"$push": {"guests": guests_id}})
@@ -160,7 +165,16 @@ def get_all_photos_from_gallery(gallery_id):
     gallery = Galleries.find_one({"id": gallery_id})
     return gallery["photos"]
 
-    
+def zip_qr_codes(event_id):
+    # archive folder to zip file
+    folder_path = os.path.join(os.getcwd() + "/public/qr_codes", event_id)
+    # delete zip file if already exists
+    if os.path.exists(folder_path + "/qr_codes.zip"):
+        os.remove(folder_path + "/qr_codes.zip")
+    shutil.make_archive(folder_path, 'zip', folder_path)
+    shutil.move(folder_path + '.zip', folder_path + '/qr_codes.zip')
+
+
 def main():
     args = sys.argv
     if len(args) == 1:
@@ -182,7 +196,7 @@ def main():
     elif args[1] == 'create':
         generate_qr_codes_from_csv(args[2],args[3])
         return
-    elif args[1] == 'create_n':
+    elif args[1] == 'create_random_qr':
         generate_n_unnamed_qr_codes(int(args[2]),args[3])
         return
     elif args[1] == 'create_event':
@@ -208,6 +222,8 @@ def main():
             print("[-] Invalid number of arguments")
                 
         return
+    elif args[1] == 'zip':
+        zip_qr_codes(args[2])
     elif args[1] == 'help' or args[1] == '-h':
         print("[+] Available commands:")
         print("[+] scan <folder_path>")
