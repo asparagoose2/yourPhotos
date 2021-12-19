@@ -165,7 +165,16 @@ def get_all_photos_from_gallery(gallery_id):
     gallery = Galleries.find_one({"id": gallery_id})
     return gallery["photos"]
 
-    
+def zip_qr_codes(event_id):
+    # archive folder to zip file
+    folder_path = os.path.join(os.getcwd() + "/public/qr_codes", event_id)
+    # delete zip file if already exists
+    if os.path.exists(folder_path + "/qr_codes.zip"):
+        os.remove(folder_path + "/qr_codes.zip")
+    shutil.make_archive(folder_path, 'zip', folder_path)
+    shutil.move(folder_path + '.zip', folder_path + '/qr_codes.zip')
+
+
 def main():
     args = sys.argv
     if len(args) == 1:
@@ -213,6 +222,8 @@ def main():
             print("[-] Invalid number of arguments")
                 
         return
+    elif args[1] == 'zip':
+        zip_qr_codes(args[2])
     elif args[1] == 'help' or args[1] == '-h':
         print("[+] Available commands:")
         print("[+] scan <folder_path>")

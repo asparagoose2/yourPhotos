@@ -130,7 +130,8 @@ createEvent = async function(req, res) {
             res.attachment("qr_codes.zip");
             console.log("\n\nsending file...");
             // res.download(`${uploadDir}/qr_codes.zip`);
-            res.sendFile(`${uploadDir}/qr_codes.zip`, {root:"."});
+            // res.sendFile(`${uploadDir}/qr_codes.zip`, {root:"."});
+            res.send("ok")
         });
         
     });
@@ -196,6 +197,18 @@ generate_random_qr_codes = async function(req, res) {
 download_qr_codes = async function(req, res) {
     const eventId = req.params.eventId;
     const uploadDir = `public/qr_codes/${eventId}`;
+    const pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "zip", eventId]);
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+    pythonProcess.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+        // res.sendFile(`${uploadDir}/qr_codes.zip`, {root:"."});
+        res.download(`${uploadDir}/qr_codes.zip`);
+    });
 }
 
 
@@ -203,5 +216,6 @@ module.exports = {
     uploadPhotos,
     generate_qr_codes,
     createEvent,
-    createEventAndQrCodes
+    createEventAndQrCodes,
+    download_qr_codes
 }
