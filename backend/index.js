@@ -14,6 +14,7 @@ app.use(fileUpload({
 
 const { photosRouter } = require('./routers/photosRouter');
 const { galleryRouter } = require('./routers/galleryRouter');
+const { eventRouter } = require('./routers/eventRouter');
 
 // enable static serving of files
 app.use(express.static('frontend'));
@@ -25,11 +26,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use("/photos", photosRouter);
+app.use("/api/events", eventRouter);
 
-app.get("/api/events/:id", (req, res) => {
-    const eventId = req.params.id;
-    res.json({status: true, event: {name: "eventId"}});
-});
+// app.get("/api/events/:id", (req, res) => {
+//     const eventId = req.params.id;
+//     res.json({status: true, event: {name: "eventId"}});
+// });
 // app.use(morgan('dev'));
 
 //start app 
@@ -41,15 +43,6 @@ app.listen(port, () =>
 
 app.use("/api/gallery",galleryRouter)
 
-// app.get("/api/gallery", (req, res) => {
-//     console.log("/api/gallery");
-//     const photos = [
-//         "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60","https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-//         "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60","https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-//         "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60","https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60"
-//     ];
-//     res.json({"photos": photos, "event": "123"});
-// });
 app.post('/upload-photos/:eventId', async (req, res) => {
     try {
         if(!req.files) {

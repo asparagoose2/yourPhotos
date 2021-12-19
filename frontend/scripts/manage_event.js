@@ -1,23 +1,29 @@
-$("#eventform").submit(function(e) {
+$("#searchBtn").click(function(e) {
     e.preventDefault();
-    const eventId = $("input[name='event_name']").val()
-    $.get("http://localhost:3000/api/events/" + eventId, function(data) {
-        if(data.status || true) {
-            $("#eventAlert").text("Event name: " + data.event.name);
-            $("#eventAlert").css("display", "block");
-            $("#photosInput").prop('disabled', false);
-            $("input[name='number_of_qr'").prop('disabled', false);
-            $("#addQRBtn").prop('disabled', false);
-            $("#downloadBtn").prop('disabled', false);
-            $("#uploadBtn").prop('disabled', false);
+    const eventId = $("input[name='event_name']").val();
+    console.log("http://localhost:3000/api/events/" + eventId);
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:3000/api/events/" + eventId,
+        success:  function(data) {
+            if(data.status) {
+                $("#eventAlert").text("Event name: " + data.event.event_name);
+                $("#eventAlert").css("display", "block");
+                $("#photosInput").prop('disabled', false);
+                $("#searchBtn").prop('disabled', true);
+                $("input[name='number_of_qr'").prop('disabled', false);
+                $("#addQRBtn").prop('disabled', false);
+                $("#downloadBtn").prop('disabled', false);
+                $("#uploadBtn").prop('disabled', false);
 
-            $("input[name='event_name']").prop('disabled', true);
-            $("input[name='event_id']").val(eventId);
-        } else {
-            $("#eventAlert").text("Event not found");
-            $("#eventAlert").addClass("alert-danger");
-            $("#eventAlert").removeClass("alert-secondary");
-            $("#eventAlert").css("display", "block");
+                $("input[name='event_name']").prop('disabled', true);
+                $("input[name='event_id']").val(eventId);
+            } else {
+                $("#eventAlert").text("Event not found");
+                $("#eventAlert").addClass("alert-danger");
+                $("#eventAlert").removeClass("alert-secondary");
+                $("#eventAlert").css("display", "block");
+            }
         }
     });
         
@@ -28,7 +34,6 @@ $("#downloadBtn").click(function(e) {
     console.log("click");
     
     $.ajax({
-        type: "POST",
         url: "http://localhost:3000/photos/download/"+$("input[type='hidden']").val(),
         type: "GET",
         cache: false,

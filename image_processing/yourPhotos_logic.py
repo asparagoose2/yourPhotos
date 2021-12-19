@@ -76,7 +76,7 @@ def scan_image(img_path):
                 if owner not in galleries:
                     galleries[owner] = []
                 galleries[owner].append(img_path)
-                Galleries.update_one({"id": owner}, {"$push": {"photos": img_path}})
+                Galleries.update_one({"id": owner}, {"$addToSet": {"photos": img_path}})
 
 
 def generate_qr_codes(guest_list,event_name,event_id):
