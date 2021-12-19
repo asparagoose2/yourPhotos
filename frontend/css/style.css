@@ -26,3 +26,9 @@ body,html{
   .gallery {
       padding: 20px;
   }
+ .group_button {
+   height: auto;
+   width: auto;
+   display: flex;
+   justify-content: space-between;
+ }
