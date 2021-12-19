@@ -115,12 +115,22 @@ createEvent = async function(req, res) {
         const pythonProcess2 = spawn('python3',["image_processing/yourPhotos_logic.py", "create", `${uploadDir}/guest_list.csv`, eventId]);
         pythonProcess2.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
+            
         });
         pythonProcess2.stderr.on('data', (data) => {
             console.error(`stderr: ${data}`);
         });
         pythonProcess2.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
+            console.log(`uploadDir: ${uploadDir}`);
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+            res.header('Access-Control-Allow-Headers', 'Content-Type');
+            res.header('Content-Disposition', 'attachment; filename=qr_codes.zip');
+            res.attachment("qr_codes.zip");
+            console.log("\n\nsending file...");
+            // res.download(`${uploadDir}/qr_codes.zip`);
+            res.sendFile(`${uploadDir}/qr_codes.zip`, {root:"."});
         });
         
     });
@@ -130,6 +140,7 @@ createEvent = async function(req, res) {
     });
     pythonProcess.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
+        
     });
 }
 
@@ -159,6 +170,32 @@ generate_qr_codes = async function(req, res) {
         console.log(`child process exited with code ${code}`);
     });
     res.send(`public/uploads/${eventId}/${guest_list_file.name}`);
+}
+
+generate_random_qr_codes = async function(req, res) {
+    console.log(req.params.eventId);
+    const eventId = req.body.eventId;
+    const count = req.body.number_of_qr;
+    const pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_random_qr", count, eventId]);
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+    pythonProcess.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+        if (code == 0) {
+            res.json({status: true, message: 'QR codes generated'});
+        } else {
+            res.json({status: false, message: 'Error generating QR codes'});
+        }
+    });
+}
+
+download_qr_codes = async function(req, res) {
+    const eventId = req.params.eventId;
+    const uploadDir = `public/qr_codes/${eventId}`;
 }
 
 

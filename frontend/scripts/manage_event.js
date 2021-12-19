@@ -6,6 +6,11 @@ $("#eventform").submit(function(e) {
             $("#eventAlert").text("Event name: " + data.event.name);
             $("#eventAlert").css("display", "block");
             $("#photosInput").prop('disabled', false);
+            $("input[name='number_of_qr'").prop('disabled', false);
+            $("#addQRBtn").prop('disabled', false);
+            $("#downloadBtn").prop('disabled', false);
+            $("#uploadBtn").prop('disabled', false);
+
             $("input[name='event_name']").prop('disabled', true);
             $("input[name='event_id']").val(eventId);
         } else {

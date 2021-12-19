@@ -15,6 +15,7 @@ import pymongo
 import os
 from dotenv import load_dotenv
 import sys
+import shutil
 
 load_dotenv()
 
@@ -102,6 +103,10 @@ def generate_qr_codes(guest_list,event_name,event_id):
         draw.text((40, 0 + 5), event_name.title(), font=font)
         img.save(os.path.join(folder_path, guest["id"] +'_'+guest["first_name"]+'_'+guest["first_name"] + '.png'))
 
+    # archive folder to zip file
+    # shutil.make_archive(folder_path, 'zip', folder_path)
+    # shutil.move(folder_path + '.zip', folder_path + '/qr_codes.zip')
+
 
 def generate_guest_list_from_csv(csv_file_path,event_id):
     data = pd.read_csv(csv_file_path)
@@ -182,7 +187,7 @@ def main():
     elif args[1] == 'create':
         generate_qr_codes_from_csv(args[2],args[3])
         return
-    elif args[1] == 'create_n':
+    elif args[1] == 'create_random_qr':
         generate_n_unnamed_qr_codes(int(args[2]),args[3])
         return
     elif args[1] == 'create_event':
