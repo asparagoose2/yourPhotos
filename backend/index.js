@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use("/photos", photosRouter);
 app.use("/api/events", eventRouter);
+app.use("/api/gallery",galleryRouter)
 
 // app.get("/api/events/:id", (req, res) => {
 //     const eventId = req.params.id;
@@ -41,48 +42,47 @@ app.listen(port, () =>
   console.log(`App is listening on port ${port}.`)
 );
 
-app.use("/api/gallery",galleryRouter)
 
-app.post('/upload-photos/:eventId', async (req, res) => {
-    try {
-        if(!req.files) {
-            res.send({
-                status: false,
-                message: 'No file uploaded'
-            });
-        } else {
-            let data = []; 
+// app.post('/upload-photos/:eventId', async (req, res) => {
+//     try {
+//         if(!req.files) {
+//             res.send({
+//                 status: false,
+//                 message: 'No file uploaded'
+//             });
+//         } else {
+//             let data = []; 
 
-            // create new folder for event in ../public/uploads/
-            const eventId = req.params.eventId;
-            const uploadDir = `../public/uploads/${eventId}`;
-            const fs = require('fs');
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir);
-            }
-            //loop all files
-            _.forEach(_.keysIn(req.files.photos), (key) => {
-                let photo = req.files.photos[key];
+//             // create new folder for event in ../public/uploads/
+//             const eventId = req.params.eventId;
+//             const uploadDir = `../public/uploads/${eventId}`;
+//             const fs = require('fs');
+//             if (!fs.existsSync(uploadDir)) {
+//                 fs.mkdirSync(uploadDir);
+//             }
+//             //loop all files
+//             _.forEach(_.keysIn(req.files.photos), (key) => {
+//                 let photo = req.files.photos[key];
                 
-                //move photo to uploads directory
-                photo.mv(uploadDir + "/" + photo.name);
+//                 //move photo to uploads directory
+//                 photo.mv(uploadDir + "/" + photo.name);
 
-                //push file details
-                data.push({
-                    name: photo.name,
-                    mimetype: photo.mimetype,
-                    size: photo.size
-                });
-            });
+//                 //push file details
+//                 data.push({
+//                     name: photo.name,
+//                     mimetype: photo.mimetype,
+//                     size: photo.size
+//                 });
+//             });
     
-            //return response
-            res.send({
-                status: true,
-                message: 'Files are uploaded',
-                data: data
-            });
-        }
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
+//             //return response
+//             res.send({
+//                 status: true,
+//                 message: 'Files are uploaded',
+//                 data: data
+//             });
+//         }
+//     } catch (err) {
+//         res.status(500).send(err);
+//     }
+// });

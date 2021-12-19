@@ -174,9 +174,9 @@ generate_qr_codes = async function(req, res) {
 }
 
 generate_random_qr_codes = async function(req, res) {
-    console.log(req.params.eventId);
     const eventId = req.body.eventId;
     const count = req.body.number_of_qr;
+    console.log(`evenId: ${eventId} count: ${count}`);
     const pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_random_qr", count, eventId]);
     pythonProcess.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
@@ -217,5 +217,6 @@ module.exports = {
     generate_qr_codes,
     createEvent,
     createEventAndQrCodes,
-    download_qr_codes
+    download_qr_codes,
+    generate_random_qr_codes
 }

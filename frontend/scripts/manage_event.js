@@ -84,6 +84,23 @@ $("#downloadBtn").click(function(e) {
     });
 });
 
+$("#addQRBtn").click(function(e){
+    e.preventDefault();
+    const eventId = $("input[name='event_name']").val();
+    const count = $("input[name='number_of_qr'").val();
+    console.log("http://localhost:3000/photos/qr/random/" + eventId);
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/photos/qr/random",
+        data: {
+            eventId: eventId,
+            number_of_qr: count
+        },
+        success:  function(data) {
+            alert(`${count} random QR added!`);
+        }
+    });
+})
 
 $("form#photosform").submit(function(e) {
     e.preventDefault();    

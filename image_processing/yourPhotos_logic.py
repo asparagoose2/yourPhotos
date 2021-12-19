@@ -136,7 +136,7 @@ def generate_n_unnamed_qr_codes(n,event_id):
     guests = []
     for i in range(n):
         guests.append({"id": str(uuid.uuid4()), "first_name": "", "last_name": "", "email": "", "phone": "","photos":[], "event": event_id})
-    generate_qr_codes(guests,event_name)
+    generate_qr_codes(guests,event_name,event_id)
     guests_id = [guest["id"] for guest in guests]
     Galleries.insert_many(guests)
     Events.update_one({"event_id": event_id}, {"$push": {"guests": guests_id}})
