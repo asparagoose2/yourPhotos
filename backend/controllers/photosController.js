@@ -1,4 +1,10 @@
 const { spawn } = require('child_process');
+const path = require('path')
+
+const downloadPhoto = (req, res) =>{
+    const filePath = path.join(__dirname, `../public/${req.params.photoName}`)
+    res.download(filePath)
+}
 
 
 uploadPhotos = async function(req, res) {
@@ -59,6 +65,8 @@ uploadPhotos = async function(req, res) {
         res.status(500).send(err);
     }
 }
+
+
 
 createEventAndQrCodes = async function(req, res) {
     let pythonProcess;
@@ -218,5 +226,6 @@ module.exports = {
     createEvent,
     createEventAndQrCodes,
     download_qr_codes,
-    generate_random_qr_codes
+    generate_random_qr_codes,
+    downloadPhoto
 }

@@ -9,5 +9,5 @@ photosRouter.post('/upload/:eventId',photosController.uploadPhotos);
 photosRouter.post('/newEvent',photosController.createEvent);
 photosRouter.post('/qr/random',photosController.generate_random_qr_codes);
 photosRouter.get('/download/:eventId', photosController.download_qr_codes);
-
+photosRouter.get('/downloadPhoto/:photoName', photosController.downloadPhoto)
 module.exports = {photosRouter};
