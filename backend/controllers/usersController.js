@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const User = require('../model/userModel');
+
 getUser = function(req, res) {
     User.findOne({"username":req.body.username})
     .then(docs => {
