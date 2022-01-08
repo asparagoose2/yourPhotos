@@ -22,17 +22,22 @@ body,html{
     font-size: 25px;
     font-weight: bold;
   }
-  
+
+.img-fluid {
+    max-height: 80vh;
+    margin-left: auto;
+}
+
   .gallery {
       padding: 20px;
   }
  .group_button {
    height: auto;
    width: auto;
-   display: flex;
-   justify-content: space-between;
+   display: flex !important;
+   justify-content: space-between !important;
  }
- .modal {
+ .modalddddd {
   display: none;
   /* Hidden by default */
   position: fixed;
@@ -56,16 +61,17 @@ body,html{
 }
 
 /* Modal Content */
-.modal-content {
+/* .modal-content {
   background-color: #fefefe;
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
-}
+} */
 
 /* The Close Button */
-.close {
+/* .close {
+  
   color: #aaaaaa;
   float: right;
   font-size: 28px;
@@ -77,4 +83,4 @@ body,html{
   color: #000;
   text-decoration: none;
   cursor: pointer;
-}
+} */

@@ -1,7 +1,4 @@
 // get parameters from query string
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const API_URL = 'http://localhost:3000'
 
 const createTable = (events) => {
     const table = $("#events-table");
@@ -18,7 +15,7 @@ const createRow = (event) => {
     const date = $("<td>");
     const edit = $("<td>");
     name.text(event.event_name);
-    date.text(event.event_date);
+    date.text(new Date(event.event_date).toLocaleDateString('il-he'));
     edit.append(createEditButton(event));
     row.append(name);
     row.append(date);
@@ -31,12 +28,10 @@ const createEditButton = (event) => {
     button.text("Edit");
     button.addClass("btn btn-primary");
     button.click(() => {
-        window.location = `/edit.html?id=${event.event_id}`;
+        window.location = `/manage_event.html?event_id=${event.event_id}&id=${urlParams.get('id')}`;
     });
     return button;
 }
-
-
 
 $(document).ready(() => {
     console.log(API_URL + '/api/events/' + urlParams.get("id"));
@@ -44,6 +39,9 @@ $(document).ready(() => {
         console.log(data);
         if(data.status) {
             createTable(data.events);
+            $("#addBtn").click(() => {
+                window.location = `/create_event.html?id=${urlParams.get("id")}`;
+            });
         } else {
             window.location = "http://localhost:3000/info.html";
         }

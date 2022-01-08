@@ -16,7 +16,7 @@ window.onload = () => {
         }).then(res => {
             res.json().then(data => {
                 if(data.status) {
-                    window.location.href=`http://localhost:3000/create_event.html`;
+                    window.location.href=`http://localhost:3000/user.html?id=${data.data._id}`;
                 }
                 else{
                     errorMsg.style.display="block";

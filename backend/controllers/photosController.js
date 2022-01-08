@@ -1,5 +1,13 @@
 const { spawn } = require('child_process');
+const path = require('path');
 
+const downloadPhoto = (req, res) =>{
+    console.log("download photo");
+    console.log(req.query.photo);
+    const filePath = path.join(__dirname,`../..${req.query.photo}`);
+    console.log(filePath);
+    res.download(filePath)
+}
 
 uploadPhotos = async function(req, res) {
     console.log("upload photos");
@@ -94,19 +102,21 @@ createEventAndQrCodes = async function(req, res) {
 createEvent = async function(req, res) {
 
     let pythonProcess;
-    if (req.body.event_owner && req.body.guests) {
+    console.log(req.body);
+    if (req.body.guests) {
         pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date, req.body.event_owner || null, req.body.guests || null]);
     } else {
-        pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date]);
+        pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date, req.body.event_owner]);
     }
     pythonProcess.stdout.on('data', (data) => {
-        console.log("data:", data.toString());
+        // console.log("data:", data.toString());
         const eventId = data.toString().replace(/(\r\n|\n|\r)/gm, "");
-        guest_list_file =  req.files.guest_list
-        console.log(req.files);
-        console.log(req.body)   
+        guest_list_file =  req.files.guest_list;
+        // console.log(req.files);
+        // console.log(req.body)   
         // create new folder for event in ../public/uploads/
         const uploadDir = `public/qr_codes/${eventId}`;
+        
         const fs = require('fs');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir);
@@ -131,7 +141,7 @@ createEvent = async function(req, res) {
             console.log("\n\nsending file...");
             // res.download(`${uploadDir}/qr_codes.zip`);
             // res.sendFile(`${uploadDir}/qr_codes.zip`, {root:"."});
-            res.send("ok")
+            res.json({status:true,data:"ok"});
         });
         
     });
@@ -218,5 +228,6 @@ module.exports = {
     createEvent,
     createEventAndQrCodes,
     download_qr_codes,
-    generate_random_qr_codes
+    generate_random_qr_codes,
+    downloadPhoto
 }
