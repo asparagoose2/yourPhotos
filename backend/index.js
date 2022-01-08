@@ -16,10 +16,10 @@ app.use(fileUpload({
 const { photosRouter } = require('./routers/photosRouter');
 const { galleryRouter } = require('./routers/galleryRouter');
 const { eventRouter } = require('./routers/eventRouter');
+const { usersRouter } = require('./routers/userRouter');
 
 // enable static serving of files
 app.use(express.static('frontend'));
-// app.use(express.static('public/uploads'));
 app.use('/public/uploads',express.static(path.join(__dirname, '../public/uploads')));
 
 //add other middleware
@@ -30,6 +30,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use("/photos", photosRouter);
 app.use("/api/events", eventRouter);
 app.use("/api/gallery",galleryRouter)
+app.use("/api/users", usersRouter);
 
 // app.get("/api/events/:id", (req, res) => {
 //     const eventId = req.params.id;
