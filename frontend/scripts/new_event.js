@@ -1,3 +1,5 @@
+// const { values } = require("lodash");
+
 window.addEventListener("beforeunload", function(e) { 
     e.preventDefault(); 
     console.log('onbeforeunload6');
@@ -9,17 +11,28 @@ $("#csvform").submit(function(e) {
     return false;
 });
 
+$(document).ready(function() {
+    $("#owner").val(urlParams.get("id"));
+});
+
 $("#smbt").on("click", function(e) {
     e.preventDefault(); 
-    // console.log($("#csvform").serializeArray());
     var formData = new FormData(document.querySelector('form'));
-    console.log(formData);
+    for (var value of formData.values()) {
+        console.log(value);
+     }
     $.ajax({
         url: "http://localhost:3000/photos/newEvent",
         type: 'POST',
         data: formData,
-        success: function (data) {
+        success: function (res) {
+            const data = JSON.parse(res)
             console.log("yay");
+            if(data.status) {
+                window.location = "http://localhost:3000/user.html?id=" + urlParams.get("id");
+            } else {
+                console.log(data.status);
+            }
         },
         cache: false,
         contentType: false,

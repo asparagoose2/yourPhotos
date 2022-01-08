@@ -205,8 +205,8 @@ def main():
             print(event_id)
             
         elif len(args) == 5:
-            event_id = create_event(args[2],args[3],args[4] if args[4] else None,args[5] if args[5] else [])
-            print("[+] Event created with id: {}".format(event_id))
+            event_id = create_event(args[2],args[3],args[4] if args[4] else None, [])
+            print(event_id)
         else:
             print("[-] Invalid number of arguments")
 

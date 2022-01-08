@@ -1,7 +1,4 @@
 // get parameters from query string
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const API_URL = 'http://localhost:3000'
 
 const createTable = (events) => {
     const table = $("#events-table");
