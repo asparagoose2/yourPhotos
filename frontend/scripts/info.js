@@ -25,16 +25,21 @@ const getEvent = (_id) => {
         url: "http://10.0.0.23:3000/api/gallery/" + _id,
         success: function (data) {
             user = data.data[0];
-            if(!user.photos){
-                let html = `
+            if(user.photos){
+                let htmlh =`Hello ${user.first_name}!`; 
+                console.log(htmlh);              
+                let htmlp = `
                 <strong>First Name:</strong> ${user.first_name} <br>
                 <strong>Last Name:</strong> ${user.last_name} <br>
                 <strong>Phone:</strong> ${user.phone} <br>
                 <strong>Email:</strong> ${user.email} <br>
             `;
 
+            $("#hello").empty();
+            $("#hello").html(htmlh);
             $("#contactInfo").empty();
-            $("#contactInfo").html(html);
+            $("#contactInfo").html(htmlp);
+
             // $("#update_btn").prop("href","./form.html?id="+_id)
             }
             else{
@@ -47,12 +52,12 @@ const getEvent = (_id) => {
 }
 let modal = document.getElementById("myModal");
 let btn = document.getElementById("update_btn");
-let span = document.getElementsByClassName("close")[0];
+let span = document.getElementsByClassName("close_update")[0];
 btn.onclick = function () {
     modal.style.display = "block";
     $("#first_name").val(user.first_name);
     $("#last_name").val(user.last_name);
-    $("#phone").val(user.phone);
+    $("#phone").val(user.phone);    
     $("#email").val(user.email);
     $("#update_contact").submit(function (e) {
         let idUrl = getIdFromUrl($(location).attr("search"));

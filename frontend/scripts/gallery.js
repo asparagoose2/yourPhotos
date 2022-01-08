@@ -47,7 +47,7 @@ $("#downloadBtn").click(function(e) {
     console.log("click");
     
     $.ajax({
-        url: "http://localhost:3000/photos/downloadPhoto?photo=" + photo,
+        url: API_URL+"/photos/downloadPhoto?photo=" + photo,
         type: "GET",
         cache: false,
         contentType: false,

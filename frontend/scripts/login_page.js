@@ -7,7 +7,7 @@ window.onload = () => {
             email: $('#email').val(),
             password: $('#password').val(),
         }
-        fetch(`http://localhost:3000/api/users/login`, {
+        fetch(`${API_URL}/api/users/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -16,7 +16,7 @@ window.onload = () => {
         }).then(res => {
             res.json().then(data => {
                 if(data.status) {
-                    window.location.href=`http://localhost:3000/user.html?id=${data.data._id}`;
+                    window.location.href=`${API_URL}/user.html?id=${data.data._id}`;
                 }
                 else{
                     errorMsg.style.display="block";

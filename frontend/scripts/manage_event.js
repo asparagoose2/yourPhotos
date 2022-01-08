@@ -2,10 +2,10 @@ $(document).ready(function(e) {
     // e.preventDefault();
     const eventId = urlParams.get('event_id'); //$("input[name='event_name']").val();
     $("input[name='event_name']").val(urlParams.get('event_id'));
-    console.log("http://localhost:3000/api/events/" + eventId);
+    console.log(API_URL+"/api/events/" + eventId);
     $.ajax({
         type: "GET",
-        url: "http://localhost:3000/api/events?eventId=" + eventId,
+        url: API_URL+"/api/events?eventId=" + eventId,
         success:  function(data) {
             console.log(data);
             if(data.status) {
@@ -36,7 +36,7 @@ $("#downloadBtn").click(function(e) {
     console.log("click");
     
     $.ajax({
-        url: "http://localhost:3000/photos/download/"+$("input[type='hidden']").val(),
+        url: API_URL+"/photos/download/"+$("input[type='hidden']").val(),
         type: "GET",
         cache: false,
         contentType: false,
@@ -90,10 +90,9 @@ $("#addQRBtn").click(function(e){
     e.preventDefault();
     const eventId = $("input[name='event_name']").val();
     const count = $("input[name='number_of_qr'").val();
-    console.log("http://localhost:3000/photos/qr/random/" + eventId);
     $.ajax({
         type: "POST",
-        url: "http://localhost:3000/photos/qr/random",
+        url: API_URL+"/photos/qr/random",
         data: {
             eventId: eventId,
             number_of_qr: count
@@ -107,10 +106,8 @@ $("#addQRBtn").click(function(e){
 $("form#photosform").submit(function(e) {
     e.preventDefault();    
     var formData = new FormData(this);
-    console.log("http://localhost:3000/photos/upload/"+$("input[name='event_id']").val());
-    console.log(formData);
     $.ajax({
-        url: "http://localhost:3000/photos/upload/"+$("input[name='event_id']").val(),
+        url: API_URL+"/photos/upload/"+$("input[name='event_id']").val(),
         type: 'POST',
         data: formData,
         success: function (data) {
