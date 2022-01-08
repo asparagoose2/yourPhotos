@@ -48,6 +48,11 @@ span.psw {
   float: right;
   padding-top: 16px;
 }
+#errorMsg{
+    display: none;
+    color: #f44336;
+
+}
 
 /* Change styles for span and cancel button on extra small screens */
 @media screen and (max-width: 300px) {
