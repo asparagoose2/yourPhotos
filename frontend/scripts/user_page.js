@@ -28,7 +28,7 @@ const createEditButton = (event) => {
     button.text("Edit");
     button.addClass("btn btn-primary");
     button.click(() => {
-        window.location = `/edit.html?id=${event.event_id}`;
+        window.location = `/manage_event.html?event_id=${event.event_id}&id=${urlParams.get('id')}`;
     });
     return button;
 }

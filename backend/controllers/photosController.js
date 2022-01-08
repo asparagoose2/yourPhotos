@@ -1,5 +1,13 @@
 const { spawn } = require('child_process');
+const path = require('path');
 
+const downloadPhoto = (req, res) =>{
+    console.log("download photo");
+    console.log(req.query.photo);
+    const filePath = path.join(__dirname,`../..${req.query.photo}`);
+    console.log(filePath);
+    res.download(filePath)
+}
 
 uploadPhotos = async function(req, res) {
     console.log("upload photos");
@@ -220,5 +228,6 @@ module.exports = {
     createEvent,
     createEventAndQrCodes,
     download_qr_codes,
-    generate_random_qr_codes
+    generate_random_qr_codes,
+    downloadPhoto
 }

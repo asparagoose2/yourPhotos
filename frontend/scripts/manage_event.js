@@ -1,11 +1,13 @@
-$("#searchBtn").click(function(e) {
-    e.preventDefault();
-    const eventId = $("input[name='event_name']").val();
+$(document).ready(function(e) {
+    // e.preventDefault();
+    const eventId = urlParams.get('event_id'); //$("input[name='event_name']").val();
+    $("input[name='event_name']").val(urlParams.get('event_id'));
     console.log("http://localhost:3000/api/events/" + eventId);
     $.ajax({
         type: "GET",
-        url: "http://localhost:3000/api/events/" + eventId,
+        url: "http://localhost:3000/api/events?eventId=" + eventId,
         success:  function(data) {
+            console.log(data);
             if(data.status) {
                 $("#eventAlert").text("Event name: " + data.event.event_name);
                 $("#eventAlert").css("display", "block");

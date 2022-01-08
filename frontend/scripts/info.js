@@ -22,10 +22,10 @@ const getIdFromUrl = (_url) => {
 const getEvent = (_id) => {
     $.ajax({
         type: "GET",
-        url: "http://localhost:3000/api/gallery/" + _id,
+        url: "http://10.0.0.23:3000/api/gallery/" + _id,
         success: function (data) {
-            user = data[0];
-            if(user.photos){
+            user = data.data[0];
+            if(!user.photos){
                 let html = `
                 <strong>First Name:</strong> ${user.first_name} <br>
                 <strong>Last Name:</strong> ${user.last_name} <br>
@@ -64,7 +64,7 @@ btn.onclick = function () {
 
         $.ajax({
             type: "PUT",
-            url: "http://localhost:3000/api/gallery/" + idUrl,
+            url: "http://10.0.0.23:3000/api/gallery/" + idUrl,
             data: {
                 first_name: fn,
                 last_name: ln,
