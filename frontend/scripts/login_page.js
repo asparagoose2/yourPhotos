@@ -1,23 +1,26 @@
-const data 
+
 window.onload = () => {
     $('#loginBtn').click(async (event) => {
         event.preventDefault();
         const user = {
-            email: $('##email').val(),
+            email: $('#email').val(),
             password: $('#password').val(),
         }
-        fetch(`http://localhost:3000/api/users`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+        $.ajax({
+            type: "POST",
+            url:"http://localhost:3000/api/users/login",
+            data: { 
+                "VarA": email, 
+                "VarB": password
             },
-            body: JSON.stringify(user)
-        }).then(res => {
-            return res.json();
-        })
-        .then(data => {
-            window.location.href=`http://127.0.0.1:3000/user.html`;
-        })
-            .catch(e => console.log(e))
+            success: function(response) {
+                //Do Something
+            },
+            error: function(xhr) {
+                //Do Something to handle error
+            }
+
+            });
+        
     });
 }
