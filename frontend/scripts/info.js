@@ -22,12 +22,11 @@ const getIdFromUrl = (_url) => {
 const getEvent = (_id) => {
     $.ajax({
         type: "GET",
-        url: "http://10.0.0.23:3000/api/gallery/" + _id,
+        url: API_URL+"/api/gallery/" + _id,
         success: function (data) {
             user = data.data[0];
-            if(user.photos){
-                let htmlh =`Hello ${user.first_name}!`; 
-                console.log(htmlh);              
+            if(user.photos.length == 0){
+                let htmlh =`Hey ${user.first_name}!`;              
                 let htmlp = `
                 <strong>First Name:</strong> ${user.first_name} <br>
                 <strong>Last Name:</strong> ${user.last_name} <br>
@@ -35,10 +34,10 @@ const getEvent = (_id) => {
                 <strong>Email:</strong> ${user.email} <br>
             `;
 
-            $("#hello").empty();
-            $("#hello").html(htmlh);
-            $("#contactInfo").empty();
-            $("#contactInfo").html(htmlp);
+                $("#hello").empty();
+                $("#hello").html(htmlh);
+                $("#contactInfo").empty();
+                $("#contactInfo").html(htmlp);
 
             // $("#update_btn").prop("href","./form.html?id="+_id)
             }
@@ -69,7 +68,7 @@ btn.onclick = function () {
 
         $.ajax({
             type: "PUT",
-            url: "http://10.0.0.23:3000/api/gallery/" + idUrl,
+            url: API_URL+"/api/gallery/" + idUrl,
             data: {
                 first_name: fn,
                 last_name: ln,
