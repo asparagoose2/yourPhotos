@@ -4,7 +4,7 @@ exports.galleryController = {
     getGalleryById(req,res) {
         Gallery.find({"id":req.params.galleryId})
         .then(docs => {
-            res.json(docs);
+            res.json({status: true, data: docs});
         })
         .catch(err => console.log(`Error getting the data from DB: ${err}`));
     },
