@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 // const morgan = require('morgan');
 const _ = require('lodash');
+var path = require('path');
 
 const app = express();
 
@@ -18,7 +19,8 @@ const { eventRouter } = require('./routers/eventRouter');
 
 // enable static serving of files
 app.use(express.static('frontend'));
-app.use(express.static('public/uploads'));
+// app.use(express.static('public/uploads'));
+app.use('/public/uploads',express.static(path.join(__dirname, '../public/uploads')));
 
 //add other middleware
 app.use(cors());
