@@ -18,7 +18,7 @@ const createRow = (event) => {
     const date = $("<td>");
     const edit = $("<td>");
     name.text(event.event_name);
-    date.text(event.event_date);
+    date.text(new Date(event.event_date).toLocaleDateString('il-he'));
     edit.append(createEditButton(event));
     row.append(name);
     row.append(date);
@@ -36,14 +36,15 @@ const createEditButton = (event) => {
     return button;
 }
 
-
-
 $(document).ready(() => {
     console.log(API_URL + '/api/events/' + urlParams.get("id"));
     $.get(API_URL + '/api/events/' + urlParams.get("id"), function(data,status) {
         console.log(data);
         if(data.status) {
             createTable(data.events);
+            $("#addBtn").click(() => {
+                window.location = `/create_event.html?id=${urlParams.get("id")}`;
+            });
         } else {
             window.location = "http://localhost:3000/info.html";
         }
