@@ -27,3 +27,8 @@ addUser = function(req, res) {
     })
     .catch(err => console.log(`Error saving the data to DB: ${err}`));
 }
+
+module.exports = {
+    getUser,
+    addUser
+}
