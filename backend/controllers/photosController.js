@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const path = require('path')
 
 const downloadPhoto = (req, res) =>{
-    const filePath = path.join(__dirname, `../public/${req.params.photoName}`)
+    const filePath = path.join(__dirname,`../public/${req.params.photoName}`)
     res.download(filePath)
 }
 
@@ -103,9 +103,9 @@ createEvent = async function(req, res) {
 
     let pythonProcess;
     if (req.body.event_owner && req.body.guests) {
-        pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date, req.body.event_owner || null, req.body.guests || null]);
+        pythonProcess = spawn('python',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date, req.body.event_owner || null, req.body.guests || null]);
     } else {
-        pythonProcess = spawn('python3',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date]);
+        pythonProcess = spawn('python',["image_processing/yourPhotos_logic.py", "create_event", req.body.event_name, req.body.event_date]);
     }
     pythonProcess.stdout.on('data', (data) => {
         console.log("data:", data.toString());
