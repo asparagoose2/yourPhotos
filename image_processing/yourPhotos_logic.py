@@ -39,7 +39,7 @@ def scan_folder(folder):
     for file in os.listdir(folder):
         try:
             # check file extension
-            if file.endswith(".jpg") or file.endswith(".jpeg"):
+            if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".JPEG") or file.endswith(".JPG"):
                 path = os.path.join(folder, file)
                 paths.append(path)
                 img = Image.open(path)
