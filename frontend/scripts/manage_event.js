@@ -111,7 +111,11 @@ $("form#photosform").submit(function(e) {
         type: 'POST',
         data: formData,
         success: function (data) {
-            alert(data)
+            if(data.status) {
+                alert("Upload success!");
+            } else {
+                alert("Upload failed!");
+            }
         },
         cache: false,
         contentType: false,
