@@ -67,7 +67,7 @@ def scan_image(img_path):
             owners = None
             print('[#] Found QR Code: {}'.format(NULL_CODE))
         else:
-            owners = [x.decode('utf-8').split('/')[-1] for x in codes]
+            owners = [x.decode('utf-8').split('=')[-1] for x in codes]
             print('[+] Found QR Code: {}'.format(owners))
     else:
         print('[-] No QR Code found in image')

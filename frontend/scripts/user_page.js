@@ -43,7 +43,7 @@ $(document).ready(() => {
                 window.location = `/create_event.html?id=${urlParams.get("id")}`;
             });
         } else {
-            window.location = "http://localhost:3000/info.html";
+            window.location = API_URL+"/info.html";
         }
     });
 });

@@ -22,14 +22,14 @@ $("#smbt").on("click", function(e) {
         console.log(value);
      }
     $.ajax({
-        url: "http://localhost:3000/photos/newEvent",
+        url: API_URL+"/photos/newEvent",
         type: 'POST',
         data: formData,
         success: function (res) {
             const data = JSON.parse(res)
             console.log("yay");
             if(data.status) {
-                window.location = "http://localhost:3000/user.html?id=" + urlParams.get("id");
+                window.location = API_URL+"/user.html?id=" + urlParams.get("id");
             } else {
                 console.log(data.status);
             }
